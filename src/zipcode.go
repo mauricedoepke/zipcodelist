@@ -5,7 +5,6 @@ import (
 	"io"
 	"io/ioutil"
 	"log"
-	"net/http"
 	"os"
 	"runtime"
 
@@ -27,13 +26,13 @@ func unique(intSlice []string) []string {
 func main() {
 	argsWithProg := os.Args
 
-	resp, err := http.Get(argsWithProg[1])
+	f, err := os.Open(argsWithProg[1])
 	if err != nil {
 		log.Fatal(err)
 	}
-	defer resp.Body.Close()
+	defer f.Close()
 
-	d := osmpbf.NewDecoder(resp.Body)
+	d := osmpbf.NewDecoder(f)
 
 	// use more memory from the start, it is faster
 	d.SetBufferSize(osmpbf.MaxBlobSize)
